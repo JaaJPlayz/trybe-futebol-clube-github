@@ -8,12 +8,9 @@ const tokenMiddleware = async (req: Request, res: Response, next: NextFunction) 
   }
 
   const token = authorization.split(' ')[1];
-  if (!token) {
-    return res.status(401).json({ message: 'Token not found' });
-  }
 
   try {
-    jwt.verify(token, process.env.JWT_SECRET || 'secret');
+    jwt.verify(token, process.env.JWT_SECRET || 'jwt_secret');
     next();
   } catch (error) {
     return res.status(401).json({ message: 'Token must be a valid token' });

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 import loginService from '../services/login.service';
 
+const INVALID_ERROR = 'Token must be a valid token';
 const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const { status, message, token } = await loginService.login(email, password);
@@ -16,11 +17,12 @@ const getRole = async (req: Request, res: Response) => {
 
   try {
     const username = jwt.verify(token, process.env.JWT_SECRET || 'secret') as { username: string };
+    if (!username) return res.status(401).json({ message: INVALID_ERROR });
     const role = await loginService.getRole(username.username);
-    if (!role) return res.status(401).json({ message: 'Token must be a valid token' });
+    if (!role) return res.status(401).json({ message: INVALID_ERROR });
     return res.status(200).json({ role });
   } catch (error) {
-    return res.status(401).json({ message: 'Token must be a valid token' });
+    return res.status(401).json({ message: INVALID_ERROR });
   }
 };
 
