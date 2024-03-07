@@ -19,9 +19,9 @@ const checkPass = async (password: string, hash: string) => {
   return check;
 };
 
-const tokenGenerator = (email: string) => {
+const tokenGenerator = (username: string) => {
   const secret = process.env.JWT_SECRET || 'secret';
-  const token = jwt.sign({ data: email }, secret, { expiresIn: '1d', algorithm: 'HS256' });
+  const token = jwt.sign({ username }, secret, { expiresIn: '1d', algorithm: 'HS256' });
   return token;
 };
 
@@ -33,8 +33,16 @@ const login = async (email: string, password: string) => {
   if (!check) return { status: 401, message: INVALID_ERROR };
   if (!validateEmail(email)) return { status: 401, message: INVALID_ERROR };
   if (!validatePassword(password)) return { status: 401, message: INVALID_ERROR };
-  const token = tokenGenerator(email);
+  const token = tokenGenerator(user.username);
   return { status: 200, token };
 };
 
-export default { login, tokenGenerator, searchUser };
+const searchUserViaUsername = async (username: string) => User.findOne({ where: { username } });
+
+const getRole = async (username: string) => {
+  const user = await searchUserViaUsername(username);
+  if (!user) return null;
+  return user.role;
+};
+
+export default { login, tokenGenerator, searchUser, getRole };

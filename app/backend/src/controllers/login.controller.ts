@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import * as jwt from 'jsonwebtoken';
 import loginService from '../services/login.service';
 
 const login = async (req: Request, res: Response) => {
@@ -8,4 +9,19 @@ const login = async (req: Request, res: Response) => {
   return res.status(status).json({ token });
 };
 
-export default { login };
+const getRole = async (req: Request, res: Response) => {
+  const { authorization } = req.headers;
+  if (!authorization) return res.status(401).json({ message: 'Token not found' });
+  const token = authorization.split(' ')[1];
+
+  try {
+    const username = jwt.verify(token, process.env.JWT_SECRET || 'secret') as { username: string };
+    const role = await loginService.getRole(username.username);
+    if (!role) return res.status(401).json({ message: 'Token must be a valid token' });
+    return res.status(200).json({ role });
+  } catch (error) {
+    return res.status(401).json({ message: 'Token must be a valid token' });
+  }
+};
+
+export default { login, getRole };

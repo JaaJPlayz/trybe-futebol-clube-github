@@ -50,4 +50,17 @@ describe('login.service', () => {
     const result = await login.login('validemail@example.com', 'password');
     expect(result).to.deep.equal(mock);
   });
+
+  it('Should return no role', async () => {
+    sinon.stub(User, 'findOne').resolves(null);
+    const getRole = await login.getRole('user');
+    expect(getRole).to.equal(null);
+  });
+
+  it('Should return the user role', async () => {
+    const lilMocka: any = { username: 'admin', role: 'role' };
+    sinon.stub(User, 'findOne').resolves(lilMocka);
+    const getRole = await login.getRole('user');
+    expect(getRole).to.equal('role');
+  });
 });
