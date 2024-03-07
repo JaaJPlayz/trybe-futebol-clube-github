@@ -1,8 +1,13 @@
 import Teams from '../database/models/Teams.model';
 
-const getAllTeamsSrv = async () => {
+const getAllTeams = async () => {
   const allTeams = await Teams.findAll();
   return allTeams;
 };
 
-export default { getAllTeamsSrv };
+const getTeamById = async (id: number) => {
+  const team = await Teams.findOne({ where: { id } });
+  return team;
+};
+
+export default { getAllTeams, getTeamById };
