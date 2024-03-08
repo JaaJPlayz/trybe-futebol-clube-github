@@ -125,4 +125,36 @@ describe('Matches Controller', () => {
 
     updateMatchStub.restore();
   });
+
+  it('should create a match', async () => {
+    const req = {
+      body: {
+        homeTeamId: '1',
+        awayTeamId: '2',
+        homeTeamGoals: 2,
+        awayTeamGoals: 1
+      }
+    } as any;
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub()
+    } as unknown as any;
+
+    const lilMocka: any = {
+      status: 200,
+      message: '',
+      match: { id: '1', homeTeamId: '1', awayTeamId: '2', homeTeamGoals: 2, awayTeamGoals: 1 }
+    }
+
+    const createMatchStub: any = sinon.stub(matchesService, 'createMatch').resolves(lilMocka);
+
+    await getAllMatchesController.createMatchController(req, res);
+
+    sinon.assert.calledWith(res.status, 200);
+    sinon.assert.calledWith(res.json, { id: '1', homeTeamId: '1', awayTeamId: '2', homeTeamGoals: 2, awayTeamGoals: 1 });
+
+    expect(createMatchStub.calledOnceWith('1', '2', 2, 1)).to.be.true;
+
+    createMatchStub.restore();
+  });
 });
