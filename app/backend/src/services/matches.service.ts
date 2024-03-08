@@ -37,4 +37,51 @@ const updateMatch = async (id: number, homeTeamGoals: number, awayTeamGoals: num
   return updatedMatch;
 };
 
-export default { getAllMatches, getInProgress, finishMatch, updateMatch };
+const equalTeamVerify = async (homeTeamId: number, awayTeamId: number) => {
+  if (homeTeamId === awayTeamId) {
+    return { status: 422, message: 'It is not possible to create a match with two equal teams' };
+  }
+  const homeTeam = await Teams.findOne({ where: { id: homeTeamId } });
+  const awayTeam = await Teams.findOne({ where: { id: awayTeamId } });
+  console.log('HOMEM TEEEEEAMMMMMMM: ', homeTeam);
+  console.log('AWAY TEEEEEAMMMMMMMIIIIIIIIIIIIIII: ', awayTeam);
+  if (!homeTeam || !awayTeam) {
+    return { status: 404, message: 'There is no team with such id!' };
+  }
+  return { status: 201 };
+};
+
+interface IResponse2 {
+  status: number | undefined;
+  message?: string | undefined;
+  match?: {
+    id: number;
+    homeTeamId: number;
+    awayTeamId: number;
+    homeTeamGoals: number;
+    awayTeamGoals: number;
+    inProgress: boolean;
+  }
+}
+
+const createMatch = async (
+  homeTeamId: number,
+  awayTeamId: number,
+  homeTeamGoals: number,
+  awayTeamGoals: number,
+) => {
+  const { status, message }: IResponse2 = await equalTeamVerify(homeTeamId, awayTeamId);
+  const allMatches = await Matches.findAll();
+  const id = allMatches.length + 1;
+  const match = await Matches.create({ id,
+    homeTeamId,
+    awayTeamId,
+    homeTeamGoals,
+    awayTeamGoals,
+    inProgress: true,
+  });
+  if (status !== 201) return { status, message };
+  return { status: 201, match };
+};
+
+export default { getAllMatches, getInProgress, finishMatch, updateMatch, createMatch };

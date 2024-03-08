@@ -23,10 +23,10 @@ class App {
     this.app.get('/teams/:id', teamsController.getTeamById);
     this.app.post('/login', loginController.login);
     this.app.get('/login/role', tokenMiddleware, loginController.getRole);
-    this.app.get('/matches', tokenMiddleware, matchesController.getInProgressController);
-    this.app.get('/matches', tokenMiddleware, matchesController.getAllMatchesController);
+    this.app.get('/matches', matchesController.getAllMatchesController);
     this.app.patch('/matches/:id/finish', tokenMiddleware, matchesController.finishMatchController);
     this.app.patch('/matches/:id', tokenMiddleware, matchesController.updateMatchController);
+    this.app.post('/matches', tokenMiddleware, matchesController.createMatchController);
 
     // Não remova esse middleware de erro, mas fique a vontade para customizá-lo
     // Mantenha ele sempre como o último middleware a ser chamado
