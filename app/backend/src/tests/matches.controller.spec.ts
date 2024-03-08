@@ -94,4 +94,30 @@ describe('Matches Controller', () => {
 
     finishMatchStub.restore();
   });
+  it('should update a match', async () => {
+    const req = {
+      params: {
+        id: '1'
+      },
+      body: {
+        homeTeamGoals: 2,
+        awayTeamGoals: 1
+      }
+    } as any;
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub()
+    } as unknown as any;
+
+    const updateMatchStub = sinon.stub(matchesService, 'updateMatch');
+
+    await getAllMatchesController.updateMatchController(req, res);
+
+    sinon.assert.calledWith(res.status, 200);
+    sinon.assert.calledWith(res.json, { message: 'Updated Match Successfully' });
+
+    expect(updateMatchStub.calledOnceWith(1, 2, 1)).to.be.true;
+
+    updateMatchStub.restore();
+  });
 });
