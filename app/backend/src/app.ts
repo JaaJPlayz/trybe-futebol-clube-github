@@ -4,6 +4,7 @@ import 'express-async-errors';
 import teamsController from './controllers/teams.controller';
 import loginController from './controllers/login.controller';
 import matchesController from './controllers/matches.controller';
+import leaderboardController from './controllers/leaderboard.controller';
 
 import tokenMiddleware from './middlewares/tokenMiddleware';
 
@@ -21,12 +22,20 @@ class App {
     this.app.get('/', (req, res) => res.json({ ok: true }));
     this.app.get('/teams', teamsController.getAllTeams);
     this.app.get('/teams/:id', teamsController.getTeamById);
+
     this.app.post('/login', loginController.login);
     this.app.get('/login/role', tokenMiddleware, loginController.getRole);
+
     this.app.get('/matches', matchesController.getAllMatchesController);
     this.app.patch('/matches/:id/finish', tokenMiddleware, matchesController.finishMatchController);
     this.app.patch('/matches/:id', tokenMiddleware, matchesController.updateMatchController);
     this.app.post('/matches', tokenMiddleware, matchesController.createMatchController);
+
+    this.app
+      .get(
+        '/leaderboard/home',
+        leaderboardController.getHomeLeaderboardController,
+      );
 
     // Não remova esse middleware de erro, mas fique a vontade para customizá-lo
     // Mantenha ele sempre como o último middleware a ser chamado

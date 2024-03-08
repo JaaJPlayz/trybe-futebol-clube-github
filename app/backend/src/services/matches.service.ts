@@ -43,8 +43,6 @@ const equalTeamVerify = async (homeTeamId: number, awayTeamId: number) => {
   }
   const homeTeam = await Teams.findOne({ where: { id: homeTeamId } });
   const awayTeam = await Teams.findOne({ where: { id: awayTeamId } });
-  console.log('HOMEM TEEEEEAMMMMMMM: ', homeTeam);
-  console.log('AWAY TEEEEEAMMMMMMMIIIIIIIIIIIIIII: ', awayTeam);
   if (!homeTeam || !awayTeam) {
     return { status: 404, message: 'There is no team with such id!' };
   }
