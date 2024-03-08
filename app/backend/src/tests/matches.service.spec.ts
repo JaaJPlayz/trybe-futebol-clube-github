@@ -120,4 +120,24 @@ describe('getAllMatches', () => {
 
     sinon.restore();
   });
+
+  it('should update the inProgress property of a match to false', async () => {
+    const matchId = 1;
+    const updatedMatch: any = {
+      id: matchId,
+      homeTeamId: 1,
+      homeTeamGoals: 2,
+      awayTeamId: 2,
+      awayTeamGoals: 1,
+      inProgress: false,
+    };
+
+    sinon.stub(Matches, 'update').resolves(updatedMatch);
+
+    const result = await getAllMatches.finishMatch(matchId);
+
+    expect(result).to.deep.equal(updatedMatch);
+
+    sinon.restore();
+  });
 });

@@ -71,4 +71,27 @@ describe('Matches Controller', () => {
 
     getInProgressStub.restore();
   });
+
+  it('should finish a match', async () => {
+    const req = {
+      params: {
+        id: '1'
+      }
+    } as any;
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub()
+    } as unknown as any;
+
+    const finishMatchStub = sinon.stub(matchesService, 'finishMatch');
+
+    await getAllMatchesController.finishMatchController(req, res);
+
+    sinon.assert.calledWith(res.status, 200);
+    sinon.assert.calledWith(res.json, { message: 'Finished' });
+
+    expect(finishMatchStub.calledOnceWith(1)).to.be.true;
+
+    finishMatchStub.restore();
+  });
 });

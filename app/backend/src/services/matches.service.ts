@@ -27,4 +27,14 @@ const getInProgress = async (inProgress: boolean) => {
   return filteredMatches;
 };
 
-export default { getAllMatches, getInProgress };
+const finishMatch = async (id: number) => {
+  const finishedMatch = await Matches.update({ inProgress: false }, { where: { id } });
+  return finishedMatch;
+};
+
+const updateMatch = async (id: number, homeTeamGoals: number, awayTeamGoals: number) => {
+  const updatedMatch = await Matches.update({ homeTeamGoals, awayTeamGoals }, { where: { id } });
+  return updatedMatch;
+};
+
+export default { getAllMatches, getInProgress, finishMatch, updateMatch };
