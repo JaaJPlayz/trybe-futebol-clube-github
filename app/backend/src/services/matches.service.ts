@@ -21,4 +21,10 @@ const getAllMatches = async () => {
   return newMatches;
 };
 
-export default { getAllMatches };
+const getInProgress = async (inProgress: boolean) => {
+  const filteredMatches = (
+    await getAllMatches()).filter((match) => match.inProgress === inProgress);
+  return filteredMatches;
+};
+
+export default { getAllMatches, getInProgress };

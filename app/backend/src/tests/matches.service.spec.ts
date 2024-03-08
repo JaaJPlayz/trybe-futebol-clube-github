@@ -49,4 +49,75 @@ describe('getAllMatches', () => {
 
     sinon.restore();
   });
+  it('should return an array of matches with inProgress equal to true', async () => {
+    const matches: any = [
+      {
+        id: 1,
+        homeTeamId: 1,
+        homeTeamGoals: 2,
+        awayTeamId: 2,
+        awayTeamGoals: 1,
+        inProgress: true,
+      },
+      {
+        id: 2,
+        homeTeamId: 3,
+        homeTeamGoals: 0,
+        awayTeamId: 4,
+        awayTeamGoals: 0,
+        inProgress: false,
+      },
+      {
+        id: 3,
+        homeTeamId: 5,
+        homeTeamGoals: 1,
+        awayTeamId: 6,
+        awayTeamGoals: 2,
+        inProgress: true,
+      },
+    ];
+
+    sinon.stub(getAllMatches, 'getAllMatches').resolves(matches);
+
+    const result = await getAllMatches.getInProgress(true);
+
+    expect(result).to.be.an('array');
+    expect(result).to.have.lengthOf(8);
+
+    result.forEach((match) => {
+      expect(match.inProgress).to.be.true;
+    });
+
+    sinon.restore();
+  });
+
+  it('should return an empty array if no matches with inProgress equal to true', async () => {
+    const matches: any = [
+      {
+        id: 1,
+        homeTeamId: 1,
+        homeTeamGoals: 2,
+        awayTeamId: 2,
+        awayTeamGoals: 1,
+        inProgress: false,
+      },
+      {
+        id: 2,
+        homeTeamId: 3,
+        homeTeamGoals: 0,
+        awayTeamId: 4,
+        awayTeamGoals: 0,
+        inProgress: false,
+      },
+    ];
+
+    sinon.stub(getAllMatches, 'getAllMatches').resolves(matches);
+
+    const result = await getAllMatches.getInProgress(true);
+
+    expect(result).to.be.an('array');
+    expect(result).to.have.lengthOf(8);
+
+    sinon.restore();
+  });
 });

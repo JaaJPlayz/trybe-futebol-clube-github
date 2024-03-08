@@ -23,6 +23,7 @@ class App {
     this.app.get('/teams/:id', teamsController.getTeamById);
     this.app.post('/login', loginController.login);
     this.app.get('/login/role', tokenMiddleware, loginController.getRole);
+    this.app.get('/matches', tokenMiddleware, matchesController.getInProgressController);
     this.app.get('/matches', tokenMiddleware, matchesController.getAllMatchesController);
 
     // Não remova esse middleware de erro, mas fique a vontade para customizá-lo
